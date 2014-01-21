@@ -428,7 +428,7 @@ defmacro
 --------
 
 `defmacro` is used to define macros. The general format is
-`(defmacro [parameters] expr)`.
+`(defmacro name [parameters] expr)`.
 
 The following example defines a macro that can be used to swap order of elements in
 code, allowing the user to write code in infix notation, where operator is in
@@ -443,6 +443,32 @@ between the operands.
   ...    (unquote (get code 2)))))
 
   => (infix (1 + 1))
+  2
+
+.. _defmacro-alias:
+
+defmacro-alias
+--------------
+
+`defmacro-alias` is used to define macros with multiple names
+(aliases). The general format is `(defmacro-alias [names] [parameters]
+expr)`. It creates multiple macros with the same parameter list and
+body, under the specified list of names.
+
+The following example defines two macros, both of which allow the user
+to write code in infix notation.
+
+.. code-block:: clj
+
+  => (defmacro-alias [infix infi] [code]
+  ...  (quasiquote (
+  ...    (unquote (get code 1))
+  ...    (unquote (get code 0))
+  ...    (unquote (get code 2)))))
+
+  => (infix (1 + 1))
+  2
+  => (infi (1 + 1))
   2
 
 .. _defmacro/g!:
@@ -548,8 +574,10 @@ for
 -------
 
 `for` is used to call a function for each element in a list or vector.
-Results are discarded and None is returned instead. Example code iterates over
-collection and calls side-effect to each element in the collection:
+The results of each call are discarded and the for expression returns
+None instead. The example code iterates over `collection` and
+for each `element` in `collection` calls the `side-effect`
+function with `element` as its argument:
 
 .. code-block:: clj
 
